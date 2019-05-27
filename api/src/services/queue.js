@@ -4,10 +4,11 @@ const
   jobWorker = require('./worker'),
   queueConfig = require('./config').queue;
 
-const client = redis.createClient(queueConfig.connection.port, queueConfig.connection.host);
+const pubClient = redis.createClient(queueConfig.connection.port, queueConfig.connection.host);
 
 const connection = {
-  client: client,
+  client: pubClient,
+  ns: queueConfig.connection.ns,
   realtime: true
 };
 const rsmq = new RedisSMQ(connection);
@@ -28,8 +29,9 @@ rsmq.createQueueAsync(queueConfig.dlq).then(res => {
   console.error('Error creating new DLQ', err);
 });
 
-client.subscribe(queueConfig.primary.rtqname);
-client.on('message', (message) => {
+const subscribeClient = redis.createClient(queueConfig.connection.port, queueConfig.connection.host);
+subscribeClient.subscribe(queueConfig.primary.rtqname);
+subscribeClient.on('message', (message) => {
   console.log('Receiving message on: ', message);
   rsmq.receiveMessage({ qname: queueConfig.primary.qname }, jobWorker.receiveJobMessageHandler(rsmq, queueConfig));
 })

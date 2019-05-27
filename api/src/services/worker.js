@@ -37,18 +37,26 @@ module.exports = {
           });
         }).catch(err => {
           const response = err.response;
-          const status = response.status / 100;
 
-          switch (status) {
-            case 5:
-              console.warn('Received an error from the server: ', response.status, err.message);
-              break;
-            case 3:
-              console.warn('Not following redirects...', response.status, err.message);
-              break;
-            case 4:
-              console.warn('Woops, we can\'t do that...', response.status, err.message);
+          if (response) {
+            const status = response.status / 100;
+            switch (status) {
+              case 5:
+                console.warn('Received an error from the server: ', response.status, err.message);
+                break;
+              case 3:
+                console.warn('Not following redirects...', response.status, err.message);
+                break;
+              case 4:
+                console.warn('Woops, we can\'t do that...', response.status, err.message);
+            }
           }
+
+          // normally we would put the message in a DLQ if it is not successful.
+          queue.deleteMessageAsync({id: resp.id, qname: queueConfig.primary.qname}).then(res => {
+            console.warn('Deleted message since it failed. You\'ll need to retry it');
+          });
+
           return Job.updateOne({ id: resp.id }, {
             status: jobStatus.FAILED
           }).then(job => {

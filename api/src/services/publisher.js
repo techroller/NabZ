@@ -1,6 +1,5 @@
 const
   queue = require('./queue'),
-  Promise = require('promise'),
   _ = require('lodash'),
   queueConfig = require('./config').queue;
 
