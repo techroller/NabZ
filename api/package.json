@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node ./src/bin/www",
-    "start:debug": "node --inspect ./src/bin/www"
+    "start:dev": "PORT=3001 NODE_ENV=development node ./src/bin/www",
+    "start:debug": "PORT=3001 NODE_ENV=development node --inspect ./src/bin/www"
   },
   "dependencies": {
     "axios": "^0.18.0",

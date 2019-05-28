@@ -31,12 +31,9 @@ rsmq.createQueueAsync(queueConfig.dlq).then(res => {
 
 const subscribeClient = redis.createClient(queueConfig.connection.port, queueConfig.connection.host);
 subscribeClient.subscribe(queueConfig.primary.rtqname);
-subscribeClient.on('message', (message) => {
-  console.log('Receiving message on: ', message);
+subscribeClient.on('message', (qname) => {
+  console.log('Receiving message on: ', qname);
   rsmq.receiveMessage({ qname: queueConfig.primary.qname }, jobWorker.receiveJobMessageHandler(rsmq, queueConfig));
-})
-
-// rsmq.receiveMessage({qname: queueConfig.primary.qname}, jobWorker.receiveJobMessageHandler(rsmq, queueConfig));
-// rsmq.receiveMessage({qname: queueConfig.dlq.qname}, jobWorker.receiveDLQMessageHandler(rsmq, queueConfig));
+});
 
 module.exports = rsmq;

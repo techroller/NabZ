@@ -18,22 +18,22 @@ services:
     volumes:
       - ./mongo-data/nabz:/var/lib/mongodb
 
-  # api:
-  #   build: ./api
-  #   container_name: nabz-api
-  #   volumes:
-  #     - ./api:/var/www/app
-  #   ports:
-  #     - 3001:3000
-  #   links:
-  #     - redis
-  #     - mongo
-  #   environment:
-  #     - NODE_ENV=development
-  #     - PORT=3000
-  #     - REDIS_HOST=cache
-  #     - MONGO_HOST=mongo
-  #     - MONGO_DB_NAME=nabz-sites
+  api:
+    build: ./api
+    container_name: nabz-api
+    volumes:
+      - ./api:/var/www/app
+    ports:
+      - 3001:3000
+    links:
+      - redis
+      - mongo
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - REDIS_HOST=nabz-cache
+      - MONGO_HOST=nabz-mongo
+      - MONGO_DB_NAME=nabz-sites
   # ui:
   #   build: ./ui
   #   container_name: nabz-ui
