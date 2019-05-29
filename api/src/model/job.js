@@ -16,6 +16,17 @@ const JobSchema = new Schema({
   updatedAt: Schema.Types.Date
 });
 
+
+JobSchema.pre('save', function (next) {
+  const self = this;
+  self.createdAt = self.updatedAt = new Date();
+  next();
+});
+
+JobSchema.pre('update', function () {
+  this.update({}, { $set: { updatedAt: new Date() } });
+});
+
 const Job = db.model('Job', JobSchema);
 
 module.exports = Job;

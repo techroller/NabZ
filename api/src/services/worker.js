@@ -22,7 +22,7 @@ module.exports = {
           }
         }).then(res => {
           const content = res.data;
-          return Job.updateOne({ id: payload.id }, {
+          return Job.updateOne({ _id: payload._id }, {
             jobId: resp.id,
             content: content,
             status: jobStatus.SUCCESS
@@ -50,19 +50,28 @@ module.exports = {
               case 4:
                 console.warn('Woops, we can\'t do that...', response.status, err.message);
             }
+            Job.updateOne({_id: payload._id}, {
+              status: jobStatus.FAILED,
+              content: response.statusText
+            }).then(job => {
+              return _.assign({
+                status: jobStatus.FAILED
+              }, payload);
+            });
+          } else {
+            Job.updateOne({_id: payload._id}, {
+              status: jobStatus.FAILED,
+              content: err.message ? err.message : 'Unknown Error'
+            }).then(job => {
+              return _.assign({
+                status: jobStatus.FAILED
+              }, payload);
+            });
           }
 
           // normally we would put the message in a DLQ if it is not successful.
           queue.deleteMessageAsync({id: resp.id, qname: queueConfig.primary.qname}).then(res => {
             console.warn('Deleted message since it failed. You\'ll need to retry it');
-          });
-
-          return Job.updateOne({ id: resp.id }, {
-            status: jobStatus.FAILED
-          }).then(job => {
-            return _.assign({
-              status: jobStatus.FAILED
-            }, payload);
           });
         });
       }

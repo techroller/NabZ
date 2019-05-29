@@ -4,6 +4,13 @@ import Axios from 'axios';
 
 const BASE_URI = 'http://localhost:3001/jobs';
 
+const client = Axios.create({
+  baseURL: BASE_URI,
+  headers: {
+    'Cache-Control': 'no-cache'
+  }
+});
+
 const qs = (params = {}) => {
   if (Object.keys(params).length > 0) {
     return '?' + Qs.stringify(params, { arrayFormat: 'brackets' });
@@ -24,22 +31,22 @@ const url = (path, params = {}) => {
     path = path.substring(0, path.lastIndexOf('/'));
   }
 
-  let url = BASE_URI + path;
+  let url = path;
 
   return url + qs(params);
 };
 
 export default {
   get: (path, params = {}) => {
-    return from(Axios.get(url(path, params)));
+    return from(client.get(url(path, params)));
   },
   post: (path, payload) => {
-    return from(Axios.post(url(path), payload));
+    return from(client.post(url(path), payload));
   },
   put: (path, payload, params = {}) => {
-    return from(Axios.put(url(path, params), payload));
+    return from(client.put(url(path, params), payload));
   },
   delete: (path, params = {}) => {
-    return from(Axios.delete(url(path, params)));
+    return from(client.delete(url(path, params)));
   }
 }

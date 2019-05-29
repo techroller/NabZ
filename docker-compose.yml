@@ -8,6 +8,7 @@ services:
       - 6379:6379
     expose:
       - 6379
+      
   mongo: 
     image: mongo:4.1.11-bionic
     container_name: nabz-mongo
@@ -34,13 +35,15 @@ services:
       - REDIS_HOST=nabz-cache
       - MONGO_HOST=nabz-mongo
       - MONGO_DB_NAME=nabz-sites
-  ui:
-    build: ./ui
-    container_name: nabz-ui
-    volumes:
-      - ./ui:/var/www/app
-    ports:
-      - 3000:3000
-    environment:
-      - NODE_ENV=development
-      - PORT=3000
+
+  # Leaving this here in case you want to see.
+  # ui:
+  #   build: ./ui
+  #   container_name: nabz-ui
+  #   volumes:
+  #     - ./ui:/var/www/app
+  #   ports:
+  #     - 3000:3000
+  #   environment:
+  #     - NODE_ENV=development
+  #     - PORT=3000

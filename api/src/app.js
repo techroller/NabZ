@@ -4,6 +4,11 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
+if (process.env.NODE_ENV === 'development') {
+  // In the dev environment, load environment variables from .env  
+  require('dotenv').config();
+}
+
 // Router handlers
 const indexRouter = require('./routes/index');
 const jobsRouter = require('./routes/jobs');

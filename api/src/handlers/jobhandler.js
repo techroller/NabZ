@@ -17,7 +17,7 @@ module.exports = {
       }
     }).catch(err => {
       console.log('Error fetching job by id:', err);
-      rreseq.status(500).send();
+      res.status(500).send();
     });
   },
 
