@@ -18,7 +18,7 @@
     "http-errors": "~1.6.3",
     "lodash": "^4.17.11",
     "mongodb": "^3.2.6",
-    "mongoose": "^5.5.11",
+    "mongoose": "^5.7.5",
     "morgan": "~1.9.1",
     "node-redis-pubsub": "^4.0.0",
     "promise": "^8.0.3",
